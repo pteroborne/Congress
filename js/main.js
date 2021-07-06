@@ -63,6 +63,7 @@ function createCard(person, group) {
   seniority.innerText = person.seniority;
   let party = document.createElement('p');
   party.innerText = person.party;
+  party.id = person.party + person.id;
 
   let main_doc = document.getElementById(group);
   body.append(title, position, body_text, seniority, party);
@@ -171,6 +172,40 @@ function sort_parties() {
   showReps()
 }
 
+function filter_party(party) {
+  unfilter_party()
+  switch (party) {
+    case "Republican":
+      filter_p("Democrat");
+      filter_p("Independent");
+      break;
+    case "Democrat":
+      filter_p("Republican");
+      filter_p("Independent");
+      break;
+    case "Independent":
+      filter_p("Democrat");
+      filter_p("Republican");
+  }
+}
+
+function filter_p(party) {
+  let list = document.querySelectorAll(`[id^="${party}"]`);
+  list.forEach((item) => {
+    item.parentElement.parentElement.parentElement.hidden = true;
+  })
+}
+
+function unfilter_party() {
+  let list = ['Republican', 'Democrat', 'Independent'];
+  list.forEach((party) => {
+    let list2 = document.querySelectorAll(`[id^="${party}"]`);
+    list2.forEach((item) => {
+      item.parentElement.parentElement.parentElement.hidden = false;
+    })
+  })
+}
+
 document.getElementById('senators').addEventListener("click", () => show_one(senate_id, rep_id))
 
 document.getElementById('representatives').addEventListener("click", () => show_one(rep_id, senate_id))
@@ -179,7 +214,13 @@ document.getElementById('all').addEventListener("click", show_all)
 
 document.getElementById('seniority').addEventListener("click", sort_seniors)
 
-document.getElementById('party').addEventListener("click", sort_parties)
+document.getElementById('all-party').addEventListener("click", unfilter_party)
+
+document.getElementById('dem').addEventListener("click", () => filter_party('Democrat'))
+
+document.getElementById('rep').addEventListener("click", () => filter_party('Republican'))
+
+document.getElementById('ind').addEventListener("click", () => filter_party('Independent'))
 
 document.getElementById('reverse').addEventListener('click', reverser)
 
